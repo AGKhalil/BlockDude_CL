@@ -29,14 +29,14 @@ class BlockDude:
         self.brick_bottom_y = [self.screen_height -
                                self.vel for i in range(len(self.brick_bottom_x))]
 
-        self.brick_bottom_x.append(192)
-        self.brick_bottom_y.append(264 - self.vel)
+        self.brick_bottom_x += [192, 168, 192]
+        self.brick_bottom_y += [264 - self.vel, 264 - self.vel, 264 - 2 * self.vel]
 
         self.bricks = Box(
             self.screen, 'BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y, self.vel, self.vel)
 
         self.blocks = Box(
-            self.screen, 'BD_sprites/Block.png', [264, 168, 120], [264 - 24] * 3, self.vel, self.vel)
+            self.screen, 'BD_sprites/Block.png', [264, 144, 120, 144], [264 - 24] * 3 + [216], self.vel, self.vel)
 
     def redraw(self):
 
