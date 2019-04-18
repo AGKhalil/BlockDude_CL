@@ -2,14 +2,14 @@ import pygame
 
 class Player:
 
-	def __init__(self, screen, x, y):
+	def __init__(self, screen, x, y, width, height):
 
 		self.screen = screen
 
 		self.x = x
 		self.y = y
-		self.width = 24
-		self.height = 24
+		self.width = width
+		self.height = height
 
 		self.left = False
 		self.right = False
