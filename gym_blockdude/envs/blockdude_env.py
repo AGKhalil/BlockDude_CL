@@ -321,6 +321,8 @@ class BlockDude(gym.Env):
             if self.viewer is None:
                 self.viewer = rendering.SimpleImageViewer()
             self.viewer.imshow(img)
+        elif mode == 'rgb_array':
+            return img
 
 # if __name__ == "__main__":
 #     block_dude = BlockDude()
