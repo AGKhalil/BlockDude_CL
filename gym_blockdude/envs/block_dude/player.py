@@ -1,7 +1,10 @@
+import sys
 import os
 import pygame
 
-mypath = os.path.dirname( os.path.realpath( __file__ ) )
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+mypath = os.path.dirname(os.path.realpath(__file__))
+
 
 class Player:
 
@@ -17,8 +20,10 @@ class Player:
         self.left = False
         self.right = False
 
-        self.walkRight = pygame.image.load(os.path.join(mypath, 'BD_sprites/DudeRight.png'))
-        self.walkLeft = pygame.image.load(os.path.join(mypath, 'BD_sprites/DudeLeft.png'))
+        self.walkRight = pygame.image.load(
+            os.path.join(mypath, 'BD_sprites/DudeRight.png'))
+        self.walkLeft = pygame.image.load(
+            os.path.join(mypath, 'BD_sprites/DudeLeft.png'))
 
     def draw(self):
         if self.right:

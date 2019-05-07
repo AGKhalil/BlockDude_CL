@@ -1,6 +1,8 @@
+import sys
 import os
 import pygame
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 mypath = os.path.dirname(os.path.realpath(__file__))
 
 
