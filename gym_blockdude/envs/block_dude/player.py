@@ -16,8 +16,8 @@ class Player:
         self.right = False
 
         self.walkRight = pygame.image.load(
-            'block_dude/BD_sprites/DudeRight.png')
-        self.walkLeft = pygame.image.load('block_dude/BD_sprites/DudeLeft.png')
+            '/Users/pharaoh/Desktop/Bristol/dissertation/gym-blockdude/gym_blockdude/envs/block_dude/BD_sprites/DudeRight.png')
+        self.walkLeft = pygame.image.load('/Users/pharaoh/Desktop/Bristol/dissertation/gym-blockdude/gym_blockdude/envs/block_dude/BD_sprites/DudeLeft.png')
 
     def draw(self):
         if self.right:

@@ -1,1 +1,1 @@
-from gym_blockdude.envs.blockdude_env import BlockDudeEnv
+from gym_blockdude.envs.blockdude_env import BlockDude

@@ -3,19 +3,21 @@ from block_dude.player import Player
 from block_dude.component import Component
 import numpy as np
 import gym
+from gym import error, utils
+from gym.utils import seeding
 from gym.spaces import Discrete, Box
+from gym.envs.classic_control import rendering
 import sys
 
 # np.set_printoptions(threshold=sys.maxsize)
 
 
 class BlockDude(gym.Env):
-    metadata = {'render.modes': ['human']}
+    metadata = {'render.modes': ['human', 'rgb_array']}
 
     def __init__(self):
 
         pygame.init()
-        pygame.display.set_caption("Block Dude")
 
         self.play_on = True
         self.carry = False
@@ -24,6 +26,7 @@ class BlockDude(gym.Env):
         self.screen_width = 432
         self.screen_height = 288
 
+        # pygame.display.set_caption("Block Dude")
         self.screen = pygame.display.set_mode(
             (self.screen_width, self.screen_height))
 
@@ -31,8 +34,10 @@ class BlockDude(gym.Env):
 
         self.x_player_init = [24]
         self.y_player_init = [264 - self.vel]
-        self.x_blocks_init = [264, 144, 120, 144]
-        self.y_blocks_init = [264 - 24] * 3 + [216]
+        # self.x_blocks_init = [264, 144, 120, 144]
+        # self.y_blocks_init = [264 - 24] * 3 + [216]
+        self.x_blocks_init = []
+        self.y_blocks_init = []
 
         self.player = Player(self.screen, self.x_player_init,
                              self.y_player_init, self.vel, self.vel)
@@ -42,27 +47,36 @@ class BlockDude(gym.Env):
         self.brick_bottom_y = [self.screen_height -
                                self.vel for i in range(len(self.brick_bottom_x))]
 
-        self.brick_bottom_x += [192, 168, 192]
-        self.brick_bottom_y += [264 - self.vel,
-                                264 - self.vel, 264 - 2 * self.vel]
+        # self.brick_bottom_x += [192, 168, 192]
+        # self.brick_bottom_y += [264 - self.vel,
+        #                         264 - self.vel, 264 - 2 * self.vel]
+        # self.brick_bottom_x += [192]
+        # self.brick_bottom_y += [264 - self.vel]
+
+        self.BD_sprites = '/Users/pharaoh/Desktop/Bristol/dissertation/gym-blockdude/gym_blockdude/envs/block_dude/BD_sprites/'
 
         self.bricks = Component(
-            self.screen, 'block_dude/BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y)
+            self.screen, self.BD_sprites + 'Brick.png', self.brick_bottom_x, self.brick_bottom_y)
 
         self.blocks = Component(
-            self.screen, 'block_dude/BD_sprites/Block.png', self.x_blocks_init, self.y_blocks_init)
+            self.screen, self.BD_sprites + 'Block.png', self.x_blocks_init, self.y_blocks_init)
 
+        # self.door = Component(
+        #     self.screen, self.BD_sprites + 'Door.png', [408], [240])
         self.door = Component(
-            self.screen, 'block_dude/BD_sprites/Door.png', [408], [240])
+            self.screen, self.BD_sprites + 'Door.png', [96], [240])
 
-        self.redraw()
-        self.initial_obs = pygame.surfarray.array3d(self.screen)
+        # self.redraw()
+        self.initial_obs = self.get_state()
 
-        self.discrete_actions = [0, 1, 2, 3, 4]
+        self.discrete_actions = [0, 1, 2, 3]
         self.action_space = Discrete(len(self.discrete_actions))
         self.action = np.random.choice(self.discrete_actions)
         self.observation_space = Box(low=0, high=255, shape=(
             self.screen_height, self.screen_width, 3), dtype=np.uint8)
+        self.n_step = 0
+        self.max_steps = 200
+        self.viewer = None
 
     def redraw(self):
 
@@ -75,6 +89,9 @@ class BlockDude(gym.Env):
 
         pygame.display.update()
 
+    def state(self):
+        canvas = np.zeros((self.screen_width, self.screen_height, 3))
+
     def reset(self):
         self.player.set_position(self.x_player_init, self.y_player_init)
         self.player.set_direction('LEFT')
@@ -82,10 +99,11 @@ class BlockDude(gym.Env):
         self.carry = False
         self.carried_bloc = -1
         self.action = -1
+        self.n_step = 0
 
         self.redraw()
 
-        observation = pygame.surfarray.array3d(self.screen)
+        observation = self.get_state()
 
         return observation
 
@@ -114,12 +132,20 @@ class BlockDude(gym.Env):
                 np.argmin([self.blocks.y[i] for i in blocks_list])]
             high_block = [self.blocks.x[min_ind], self.blocks.y[min_ind]]
 
-        if (high_brick and not high_block) or (high_brick[1] < high_block[1]):
+        if (high_brick and not high_block):
             agent.y[index] = high_brick[1] - self.vel
-        elif (high_block and not high_brick) or (high_brick[1] > high_block[1]):
+        elif (high_block and not high_brick):
             agent.y[index] = high_block[1] - self.vel
+        elif high_brick and high_brick:
+            if high_brick[1] < high_block[1]:
+                agent.y[index] = high_brick[1] - self.vel
+            elif high_brick[1] > high_block[1]:
+                agent.y[index] = high_block[1] - self.vel
 
     def step(self, action):
+    
+        self.n_step += 1
+
         self.play_on = False
 
         brick_dir_left = self.bricks.is_component(
@@ -213,69 +239,89 @@ class BlockDude(gym.Env):
         if not action == 2:
             self.gravity(self.player)
 
+        # pull block down, on player or using gravity
+        if self.blocks.x:
+            if self.carry:
+                self.blocks.x[self.carried_bloc] = self.player.x[0]
+                self.blocks.y[self.carried_bloc] = self.player.y[
+                    0] - self.vel
+            else:
+                self.gravity(self.blocks, self.carried_bloc)
+
+
+        self.redraw()
+        info = {}
+        observation = self.get_state()
+
         if self.door.is_door(self.player.x, self.player.y):
             done = True
             reward = 50.0
+            self.reset()
+        elif self.n_step > self.max_steps:
+            done = True
+            reward = -1.0
+            self.reset()
         else:
             done = False
             reward = -1.0
 
-        info = {}
-        observation = pygame.surfarray.array3d(self.screen)
-
         return observation, reward, done, info
 
-    def render(self, mode='human', close=False):
+    def sample_action(self):
+        return np.random.choice(self.discrete_actions)
 
+    def play(self):
         running = True
 
         while running:
             pygame.time.delay(50)
 
-            if mode:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT or close:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+                self.keys = pygame.key.get_pressed()
+                num_keys = 0
+                for key in self.keys:
+                    num_keys += 1 if key == 1 else 0
+
+                if event.type == pygame.KEYDOWN and num_keys == 1 and self.play_on:
+                    if self.keys[pygame.K_q]:
                         running = False
+                        self.reset()
+                    elif self.keys[pygame.K_r]:
+                        new_ob = self.reset()
+                    elif self.keys[pygame.K_LEFT]:
+                        self.action = 0
+                    elif self.keys[pygame.K_RIGHT]:
+                        self.action = 1
+                    elif self.keys[pygame.K_UP]:
+                        self.action = 2
+                    elif self.keys[pygame.K_DOWN]:
+                        self.action = 3
 
-                    self.keys = pygame.key.get_pressed()
-                    num_keys = 0
-                    for key in self.keys:
-                        num_keys += 1 if key == 1 else 0
+                    if self.action != -1:
+                        observation, reward, done, _ = self.step(
+                            self.action)
 
-                    if event.type == pygame.KEYDOWN and num_keys == 1 and self.play_on:
-                        if self.keys[pygame.K_q]:
-                            running = False
-                            self.reset()
-                        elif self.keys[pygame.K_r]:
-                            new_ob = self.reset()
-                        elif self.keys[pygame.K_LEFT]:
-                            self.action = 0
-                        elif self.keys[pygame.K_RIGHT]:
-                            self.action = 1
-                        elif self.keys[pygame.K_UP]:
-                            self.action = 2
-                        elif self.keys[pygame.K_DOWN]:
-                            self.action = 3
+                elif event.type == pygame.KEYUP:
+                    if not (self.keys[pygame.K_LEFT] and self.keys[pygame.K_RIGHT] and self.keys[pygame.K_UP] and self.keys[pygame.K_DOWN]):
+                        self.play_on = True
 
-                        if self.action != -1:
-                            observation, reward, done, _ = self.step(
-                                self.action)
+                self.redraw()
 
-                    elif event.type == pygame.KEYUP:
-                        if not (self.keys[pygame.K_LEFT] and self.keys[pygame.K_RIGHT] and self.keys[pygame.K_UP] and self.keys[pygame.K_DOWN]):
-                            self.play_on = True
+    def get_state(self):
+        state = np.fliplr(np.flip(np.rot90(pygame.surfarray.array3d(
+            pygame.display.get_surface()).astype(np.uint8))))
+        return state
 
-                # pull block down, on player or using gravity
-                if self.carry:
-                    self.blocks.x[self.carried_bloc] = self.player.x[0]
-                    self.blocks.y[self.carried_bloc] = self.player.y[
-                        0] - self.vel
-                else:
-                    self.gravity(self.blocks, self.carried_bloc)
+    def render(self, mode='human', close=False):
+        img = self.get_state()
+        if mode == 'human':
+            if self.viewer is None:
+                self.viewer = rendering.SimpleImageViewer()
+            self.viewer.imshow(img)
 
-            self.redraw()
-
-
-if __name__ == "__main__":
-    block_dude = BlockDude()
-    block_dude.render()
+# if __name__ == "__main__":
+#     block_dude = BlockDude()
+#     block_dude.play()
