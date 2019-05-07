@@ -1,13 +1,18 @@
+import sys
+import os
+
+subdir_path = os.path.dirname(os.path.realpath(__file__)) + '/block_dude'
+sys.path.insert(0, subdir_path)
+
 import pygame
-from block_dude.player import Player
-from block_dude.component import Component
+from player import Player
+from component import Component
 import numpy as np
 import gym
 from gym import error, utils
 from gym.utils import seeding
 from gym.spaces import Discrete, Box
 from gym.envs.classic_control import rendering
-import sys
 
 
 class BlockDude(gym.Env):
@@ -139,7 +144,7 @@ class BlockDude(gym.Env):
                 agent.y[index] = high_block[1] - self.vel
 
     def step(self, action):
-    
+
         self.n_step += 1
 
         self.play_on = False
@@ -243,7 +248,6 @@ class BlockDude(gym.Env):
                     0] - self.vel
             else:
                 self.gravity(self.blocks, self.carried_bloc)
-
 
         self.redraw()
         info = {}
