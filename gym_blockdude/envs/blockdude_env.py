@@ -1,6 +1,6 @@
 import pygame
-from block_dude.player import Player
-from block_dude.component import Component
+from player import Player
+from component import Component
 import numpy as np
 import gym
 from gym import error, utils
@@ -8,8 +8,6 @@ from gym.utils import seeding
 from gym.spaces import Discrete, Box
 from gym.envs.classic_control import rendering
 import sys
-
-# np.set_printoptions(threshold=sys.maxsize)
 
 
 class BlockDude(gym.Env):
@@ -53,18 +51,16 @@ class BlockDude(gym.Env):
         # self.brick_bottom_x += [192]
         # self.brick_bottom_y += [264 - self.vel]
 
-        self.BD_sprites = '/Users/pharaoh/Desktop/Bristol/dissertation/gym-blockdude/gym_blockdude/envs/block_dude/BD_sprites/'
-
         self.bricks = Component(
-            self.screen, self.BD_sprites + 'Brick.png', self.brick_bottom_x, self.brick_bottom_y)
+            self.screen, 'BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y)
 
         self.blocks = Component(
-            self.screen, self.BD_sprites + 'Block.png', self.x_blocks_init, self.y_blocks_init)
+            self.screen, 'BD_sprites/Block.png', self.x_blocks_init, self.y_blocks_init)
 
         # self.door = Component(
-        #     self.screen, self.BD_sprites + 'Door.png', [408], [240])
+        #     self.screen, 'BD_sprites/Door.png', [408], [240])
         self.door = Component(
-            self.screen, self.BD_sprites + 'Door.png', [96], [240])
+            self.screen, 'BD_sprites/Door.png', [96], [240])
 
         # self.redraw()
         self.initial_obs = self.get_state()
@@ -322,6 +318,6 @@ class BlockDude(gym.Env):
                 self.viewer = rendering.SimpleImageViewer()
             self.viewer.imshow(img)
 
-# if __name__ == "__main__":
-#     block_dude = BlockDude()
-#     block_dude.play()
+if __name__ == "__main__":
+    block_dude = BlockDude()
+    block_dude.play()
