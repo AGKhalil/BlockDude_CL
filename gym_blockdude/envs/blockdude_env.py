@@ -322,6 +322,6 @@ class BlockDude(gym.Env):
                 self.viewer = rendering.SimpleImageViewer()
             self.viewer.imshow(img)
 
-if __name__ == "__main__":
-    block_dude = BlockDude()
-    block_dude.play()
+# if __name__ == "__main__":
+#     block_dude = BlockDude()
+#     block_dude.play()
