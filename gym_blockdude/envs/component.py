@@ -3,7 +3,7 @@ import os
 import pygame
 
 mypath = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(mypath)
+sys.path.append(os.getcwd())
 
 
 class Component:
