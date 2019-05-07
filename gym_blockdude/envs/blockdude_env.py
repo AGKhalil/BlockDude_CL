@@ -1,6 +1,6 @@
 import pygame
-from player import Player
-from component import Component
+from block_dude.player import Player
+from block_dude.component import Component
 import numpy as np
 import gym
 from gym import error, utils
