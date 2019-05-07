@@ -4,7 +4,7 @@ import pygame
 
 mypath = os.path.dirname(os.path.realpath(__file__))
 # sys.path.append(os.path.join(mypath, '../..'))
-sys.path.insert(1, mypath)
+sys.path.insert(0, 'mypath')
 
 
 class Component:
