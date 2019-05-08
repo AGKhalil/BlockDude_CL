@@ -67,6 +67,7 @@ class BlockDude(gym.Env):
         self.door = Component(
             self.screen, 'BD_sprites/Door.png', [96], [240])
 
+        # self.redraw()
         self.initial_obs = self.get_state()
 
         self.discrete_actions = [0, 1, 2, 3]
