@@ -68,7 +68,7 @@ class BlockDudeExtraHard(gym.Env):
         self.observation_space = Box(low=0, high=255, shape=(
             self.screen_height, self.screen_width, 3), dtype=np.uint8)
         self.n_step = 0
-        self.max_steps = 500
+        self.max_steps = 200
         self.viewer = None
 
     def redraw(self):
