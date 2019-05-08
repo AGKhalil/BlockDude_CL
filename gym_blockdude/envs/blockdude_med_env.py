@@ -15,7 +15,7 @@ from gym.spaces import Discrete, Box
 from gym.envs.classic_control import rendering
 
 
-class BlockDude(gym.Env):
+class BlockDudeMed(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
 
     def __init__(self):
@@ -53,8 +53,8 @@ class BlockDude(gym.Env):
         # self.brick_bottom_x += [192, 168, 192]
         # self.brick_bottom_y += [264 - self.vel,
         #                         264 - self.vel, 264 - 2 * self.vel]
-        # self.brick_bottom_x += [192]
-        # self.brick_bottom_y += [264 - self.vel]
+        self.brick_bottom_x += [192]
+        self.brick_bottom_y += [264 - self.vel]
 
         self.bricks = Component(
             self.screen, 'BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y)
@@ -62,10 +62,10 @@ class BlockDude(gym.Env):
         self.blocks = Component(
             self.screen, 'BD_sprites/Block.png', self.x_blocks_init, self.y_blocks_init)
 
-        # self.door = Component(
-        #     self.screen, 'BD_sprites/Door.png', [408], [240])
         self.door = Component(
-            self.screen, 'BD_sprites/Door.png', [96], [240])
+            self.screen, 'BD_sprites/Door.png', [408], [240])
+        # self.door = Component(
+        #     self.screen, 'BD_sprites/Door.png', [96], [240])
 
         self.initial_obs = self.get_state()
 
@@ -324,5 +324,5 @@ class BlockDude(gym.Env):
             return img
 
 # if __name__ == "__main__":
-#     block_dude = BlockDude()
+#     block_dude = BlockDudeMed()
 #     block_dude.play()

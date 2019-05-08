@@ -15,7 +15,7 @@ from gym.spaces import Discrete, Box
 from gym.envs.classic_control import rendering
 
 
-class BlockDude(gym.Env):
+class BlockDudeExtraHard(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
 
     def __init__(self):
@@ -37,10 +37,8 @@ class BlockDude(gym.Env):
 
         self.x_player_init = [24]
         self.y_player_init = [264 - self.vel]
-        # self.x_blocks_init = [264, 144, 120, 144]
-        # self.y_blocks_init = [264 - 24] * 3 + [216]
-        self.x_blocks_init = []
-        self.y_blocks_init = []
+        self.x_blocks_init = [120]
+        self.y_blocks_init = [240] 
 
         self.player = Player(self.screen, self.x_player_init,
                              self.y_player_init, self.vel, self.vel)
@@ -50,11 +48,8 @@ class BlockDude(gym.Env):
         self.brick_bottom_y = [self.screen_height -
                                self.vel for i in range(len(self.brick_bottom_x))]
 
-        # self.brick_bottom_x += [192, 168, 192]
-        # self.brick_bottom_y += [264 - self.vel,
-        #                         264 - self.vel, 264 - 2 * self.vel]
-        # self.brick_bottom_x += [192]
-        # self.brick_bottom_y += [264 - self.vel]
+        self.brick_bottom_x += [192, 192]
+        self.brick_bottom_y += [264 - self.vel, 264 - 2 * self.vel]
 
         self.bricks = Component(
             self.screen, 'BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y)
@@ -62,10 +57,8 @@ class BlockDude(gym.Env):
         self.blocks = Component(
             self.screen, 'BD_sprites/Block.png', self.x_blocks_init, self.y_blocks_init)
 
-        # self.door = Component(
-        #     self.screen, 'BD_sprites/Door.png', [408], [240])
         self.door = Component(
-            self.screen, 'BD_sprites/Door.png', [96], [240])
+            self.screen, 'BD_sprites/Door.png', [408], [240])
 
         self.initial_obs = self.get_state()
 
@@ -324,5 +317,5 @@ class BlockDude(gym.Env):
             return img
 
 # if __name__ == "__main__":
-#     block_dude = BlockDude()
+#     block_dude = BlockDudeExtraHard()
 #     block_dude.play()
