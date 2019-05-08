@@ -53,8 +53,8 @@ class BlockDudeMed(gym.Env):
         # self.brick_bottom_x += [192, 168, 192]
         # self.brick_bottom_y += [264 - self.vel,
         #                         264 - self.vel, 264 - 2 * self.vel]
-        # self.brick_bottom_x += [192]
-        # self.brick_bottom_y += [264 - self.vel]
+        self.brick_bottom_x += [192]
+        self.brick_bottom_y += [264 - self.vel]
 
         self.bricks = Component(
             self.screen, 'BD_sprites/Brick.png', self.brick_bottom_x, self.brick_bottom_y)
@@ -323,6 +323,6 @@ class BlockDudeMed(gym.Env):
         elif mode == 'rgb_array':
             return img
 
-if __name__ == "__main__":
-    block_dude = BlockDudeMed()
-    block_dude.play()
+# if __name__ == "__main__":
+#     block_dude = BlockDudeMed()
+#     block_dude.play()
