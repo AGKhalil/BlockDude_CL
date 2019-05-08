@@ -10,7 +10,7 @@ register(
 )
 register(
     id='BlockDude-Hard-v0',
-    entry_point='gym_blockdude.envs:BlockDudeHArd',
+    entry_point='gym_blockdude.envs:BlockDudeHard',
 )
 register(
     id='BlockDude-ExtraHard-v0',
