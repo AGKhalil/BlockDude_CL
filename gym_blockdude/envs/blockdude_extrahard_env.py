@@ -197,12 +197,12 @@ class BlockDudeExtraHard(gym.Env):
                     self.carry = True
             elif self.carry:
                 self.carry = False
-                if self.player.get_direction() == 'LEFT' and brick_dir_left[0] and not brick_up_left[0] and not block_dir_left[0] and not block_up_left[0]:
+                if self.player.x[0] != 0 and self.player.get_direction() == 'LEFT' and brick_dir_left[0] and not brick_up_left[0] and not block_dir_left[0] and not block_up_left[0]:
                     self.blocks.x[self.carried_bloc] = self.bricks.x[
                         brick_dir_left[1]]
                     self.blocks.y[self.carried_bloc] = self.bricks.y[
                         brick_dir_left[1]] - self.vel
-                elif self.player.get_direction() == 'LEFT' and block_dir_left[0] and not block_up_left[0] and not brick_dir_left[0] and not brick_up_left[0]:
+                elif self.player.x[0] != 0 and self.player.get_direction() == 'LEFT' and block_dir_left[0] and not block_up_left[0] and not brick_dir_left[0] and not brick_up_left[0]:
                     self.blocks.x[self.carried_bloc] = self.blocks.x[
                         block_dir_left[1]]
                     self.blocks.y[self.carried_bloc] = self.blocks.y[
@@ -221,7 +221,7 @@ class BlockDudeExtraHard(gym.Env):
                     self.blocks.x[
                         self.carried_bloc] = self.player.x[0] + self.vel
                     self.blocks.y[self.carried_bloc] = self.player.y[0]
-                elif self.player.get_direction() == 'LEFT' and not brick_dir_left[0] and not block_dir_left[0] and not brick_up_left[0] and not block_up_left[0]:
+                elif self.player.x[0] != 0 and self.player.get_direction() == 'LEFT' and not brick_dir_left[0] and not block_dir_left[0] and not brick_up_left[0] and not block_up_left[0]:
                     self.blocks.x[
                         self.carried_bloc] = self.player.x[0] - self.vel
                     self.blocks.y[self.carried_bloc] = self.player.y[0]
@@ -316,6 +316,6 @@ class BlockDudeExtraHard(gym.Env):
         elif mode == 'rgb_array':
             return img
 
-# if __name__ == "__main__":
-#     block_dude = BlockDudeExtraHard()
-#     block_dude.play()
+if __name__ == "__main__":
+    block_dude = BlockDudeExtraHard()
+    block_dude.play()
