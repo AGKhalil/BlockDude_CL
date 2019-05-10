@@ -82,6 +82,9 @@ class BlockDudeExtraHard(gym.Env):
 
         pygame.display.update()
 
+    def set_max_steps(self, steps):
+        self.max_steps = steps
+
     def state(self):
         canvas = np.zeros((self.screen_width, self.screen_height, 3))
 
